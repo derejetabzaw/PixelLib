@@ -61,10 +61,11 @@ class instance_custom_training:
         save_json_path1 = os.path.abspath(os.path.join(dataset, "train.json"))
         
         #conversion of individual labelme json files into a single json file        
-        labelme2coco.convert(labelme_folder1, save_json_path1)
+        # labelme2coco.convert(labelme_folder1, save_json_path1)
         
         # Training dataset.
         self.dataset_train = Data()
+        print ("Training Dataset")
         self.dataset_train.load_data(save_json_path1, labelme_folder1)
         self.dataset_train.prepare()
         
@@ -76,17 +77,17 @@ class instance_custom_training:
         
         
         #conversion of individual labelme json files into a single json file  
-        labelme2coco.convert(labelme_folder2, save_json_path2)
+        # labelme2coco.convert(labelme_folder2, save_json_path2)
         
         # Training dataset.
         self.dataset_test = Data()
+        print ("Test Dataset")
         self.dataset_test.load_data(save_json_path2, labelme_folder2)
         self.dataset_test.prepare()
     
 
     def visualize_sample(self):
         image_id = np.random.choice(self.dataset_train.image_ids)
-
         image = self.dataset_train.load_image(image_id)
         mask, class_ids = self.dataset_train.load_mask(image_id)
         bbox = extract_bboxes(mask)
@@ -172,14 +173,17 @@ class Data(Dataset):
     def load_data(self,  annotation_json, images_path):
        
         # Load json from file
-        json_file = open(annotation_json)
-        coco_json = json.load(json_file)
-        json_file.close()
+        # json_file = open(annotation_json)
+        # annotation_json = os.path.join(os.getcwd(), 'train.json')
+        with open(annotation_json, "r") as f:
+            # json_file = f
+            coco_json = json.load(f)
+            f.close()
 
         # Add the class names using the base method from utils.Dataset
         source_name = "coco_like_dataset"
         for category in coco_json['categories']:
-            class_id = category['id']
+            class_id = int(category['id']) + 1
             class_name = category['name']
             if class_id < 1:
                 print('Error: Class id for "{}" cannot be less than one. (0 is reserved for the background)'.format(
@@ -242,7 +246,7 @@ class Data(Dataset):
         class_ids = []
 
         for annotation in annotations:
-            class_id = annotation['category_id']
+            class_id = int(annotation['category_id']) + 1
             mask = Image.new('1', (image_info['width'], image_info['height']))
             mask_draw = ImageDraw.ImageDraw(mask, '1')
             for segmentation in annotation['segmentation']:
