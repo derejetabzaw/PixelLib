@@ -2214,7 +2214,7 @@ class MaskRCNN(object):
             name.
         """
         # Set date and epoch counter as if starting a new model
-        self.epoch = 0
+        self.epoch = 3
 
         # If we have a model path with date and epochs use them
         self.model_name = 'mask_rcnn_model.{epoch:03d}-{val_loss:01f}.h5'
@@ -2283,7 +2283,7 @@ class MaskRCNN(object):
         self.checkpoint_path = os.path.join(self.save_directory, self.model_name)
 
         callb = [
-            ModelCheckpoint(self.checkpoint_path,save_weights_only=True,save_best_only = True, monitor = "val_loss", verbose = 0), 
+            ModelCheckpoint(self.checkpoint_path,save_weights_only=True,save_best_only = False, monitor = "val_loss", verbose = 0), 
             lr_rate ,
      
         ] 

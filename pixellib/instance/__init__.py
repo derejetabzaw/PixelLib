@@ -704,7 +704,6 @@ class custom_segmentation:
             print("Processing image...")
         results = self.model.detect([new_img])    
 
-
         r = results[0] 
         
             
@@ -715,7 +714,7 @@ class custom_segmentation:
         else: 
             output = display_box_instances(image, r['rois'], r['masks'], r['class_ids'], self.config.class_names, r['scores'],
             text_thickness = text_thickness,text_size = text_size, box_thickness = box_thickness)   
-
+                        
         if output_image_name is not None:
             cv2.imwrite(output_image_name, output)
             print("Processed image saved successfully in your current working directory.")   
